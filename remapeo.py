@@ -13,9 +13,15 @@ controller = keyboard.Controller()
 
 # Diccionario para mapeo de teclas
 key_map = {
-    'r': 'y',  # Cambiar 'r' por 'y'
-    'a': 'b'   # Cambiar 'a' por 'b'
-}
+  'a': 'q', # Cambiar 'r' por 'y'
+  's': 'w',  # Cambiar 'a' por 'b'
+  'd': 'e',
+  'f': 'r',
+  'j': 'u',
+  'k': 'i',
+  'l': 'o',
+  'ñ': 'p' 
+  }
 
 # Función que se ejecuta cuando se presiona una tecla
 def on_press(key):
