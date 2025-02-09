@@ -75,8 +75,8 @@ Presiona `Ctrl + C` en la terminal para detener la ejecución.
 # Ejecutable para Windows
 
 ## Crear instalable
-pip install pyinstaller
-pyinstaller --onefile --noconsole remapeo.py
+- pip install pyinstaller
+- pyinstaller --onefile --noconsole remapeo.py
 
 ## Opciones:
 -- onefile: crea un solo archivo ejecutable.
