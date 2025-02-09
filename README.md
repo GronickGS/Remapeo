@@ -1,4 +1,5 @@
 # Detector de Doble Tecla
+Algunas veces sucede que en nuestro teclado hay fallos en ciertas teclas, dejando de funcionar correctamente. Reemplazar un teclado completo puede ser costoso si solo una tecla presenta problemas. Este programa ofrece una solución permitiendo reasignar teclas defectuosas a otras teclas funcionales, evitando la necesidad de un reemplazo inmediato del hardware.
 
 Este programa detecta cuando una tecla se presiona dos veces rápidamente y la reemplaza por otro carácter o palabra definida en los diccionarios de mapeo. Además, permite la ejecución de combinaciones de teclas como `Ctrl + C`, `Ctrl + V` y `Ctrl + Alt + →`.
 
@@ -10,21 +11,31 @@ Este programa detecta cuando una tecla se presiona dos veces rápidamente y la r
 - Muestra un mensaje de estado cada minuto indicando que el programa sigue en ejecución.
 
 ## Requisitos
+### Biblioteca
 - Python 3.x
-- Biblioteca `pynput`
+- `pynput`
+La biblioteca pynput se necesita en el script para escuchar las pulsaciones de teclas y controlar el teclado.
 
 Para instalar `pynput`, ejecuta:
 ```sh
 pip install pynput
+
 ```
-
-## Uso
-Ejecuta el script y empieza a escribir. Si presionas dos veces una tecla dentro del tiempo establecido, se reemplazará según la configuración.
-
 Ejemplo:
 - Presionar `g` dos veces rápidamente la reemplaza por `@gmail.com`.
 - Presionar `a` dos veces rápidamente la reemplaza por `q`.
 - Presionar `m` dos veces rápidamente ejecuta `Ctrl + Alt + →`.
+- Presionar `c` dos veces rápidamente ejecuta `Ctrl + c`.
+
+- `time`
+La librería time se usa en el código para medir el tiempo entre pulsaciones de teclas y mostrar el estado cada minuto.
+
+Para instalar `time`, ejecuta:
+```sh
+pip install time
+```
+- `threading`
+El módulo `threading` se usa para ejecutar la función imprimir_estado en segundo plano, de modo que el programa pueda seguir escuchando las teclas presionadas sin bloquearse. No es necesario instalarlo, ya que es parte de la biblioteca estándar de Python.
 
 ## Personalización
 Puedes modificar los diccionarios `mapa_teclas` y `mapa_palabras` para cambiar las teclas y palabras de reemplazo.
@@ -61,10 +72,7 @@ Presiona `Ctrl + C` en la terminal para detener la ejecución.
 - No funciona en entornos donde `pynput` no tenga permisos suficientes.
 - Puede interferir con otras aplicaciones si no se configura adecuadamente.
 
-# EXE Windows
-
-## Libreria usada
-pip install pynput
+# Ejecutable para Windows
 
 ## Crear instalable
 pip install pyinstaller
