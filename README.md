@@ -13,7 +13,7 @@ Este programa detecta cuando una tecla se presiona dos veces rápidamente y la r
 ## Requisitos
 ### Biblioteca
 - Python 3.x
-- `pynput`
+- `pynput`:
 La biblioteca pynput se necesita en el script para escuchar las pulsaciones de teclas y controlar el teclado.
 
 Para instalar `pynput`, ejecuta:
@@ -27,14 +27,14 @@ Ejemplo:
 - Presionar `m` dos veces rápidamente ejecuta `Ctrl + Alt + →`.
 - Presionar `c` dos veces rápidamente ejecuta `Ctrl + c`.
 
-- `time`
+- `time`: 
 La librería time se usa en el código para medir el tiempo entre pulsaciones de teclas y mostrar el estado cada minuto.
 
 Para instalar `time`, ejecuta:
 ```sh
 pip install time
 ```
-- `threading`
+- `threading`: 
 El módulo `threading` se usa para ejecutar la función imprimir_estado en segundo plano, de modo que el programa pueda seguir escuchando las teclas presionadas sin bloquearse. No es necesario instalarlo, ya que es parte de la biblioteca estándar de Python.
 
 ## Personalización
