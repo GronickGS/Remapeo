@@ -1,67 +1,130 @@
 from pynput import keyboard
 import time
+import threading
 
 # Variables para almacenar la última tecla presionada y el tiempo
-last_key = None
-last_time = 0
+ultima_tecla = None  # Última tecla presionada
+ultimo_tiempo = 0  # Momento en que se presionó la última tecla
 
-# Definir el tiempo máximo entre pulsaciones para detectar doble clic
-double_press_interval = 0.3  # En segundos
+# Definir el tiempo máximo entre pulsaciones para detectar doble pulsación
+intervalo_doble_pulsacion = 0.3  # En segundos
 
-# Crear una instancia de Controller
-controller = keyboard.Controller()
+# Crear una instancia de Controller para simular eventos de teclado
+controlador = keyboard.Controller()
 
-# Diccionario para mapeo de teclas
-key_map = {
-  'a': 'q', # Cambiar 'r' por 'y'
-  's': 'w',  # Cambiar 'a' por 'b'
-  'd': 'e',
-  'f': 'r',
-  'j': 'u',
-  'k': 'i',
-  'l': 'o',
-  'ñ': 'p' 
-  }
+# Diccionario para mapeo de teclas individuales
+# Si una tecla se presiona dos veces rápidamente, será reemplazada
+mapa_teclas = {
+    'a': 'q',  # 'a' -> 'q'
+    'ñ': '?',  # 'ñ' -> '?'
+    's': 'Q'   # 's' -> 'Q'
+}
+
+# Diccionario para teclas que deben reemplazarse por palabras completas
+mapa_palabras = {
+    'g': "@gmail.com",  # 'g' -> "@gmail.com"
+    'x': 'cap'  # 'x' -> "cap"
+}
 
 # Función que se ejecuta cuando se presiona una tecla
-def on_press(key):
-    global last_key, last_time
+def al_presionar(tecla):
+    """
+    Captura la tecla presionada y detecta si se presiona dos veces en un intervalo corto.
+    Si la tecla está en los diccionarios de mapeo, la reemplaza por el valor asignado.
+    """
+    global ultima_tecla, ultimo_tiempo
 
     try:
-        current_time = time.time()
+        tiempo_actual = time.time()
 
         # Verificar si se presionó la misma tecla dos veces rápidamente
-        if key == last_key and (current_time - last_time) <= double_press_interval:
-            # Verificar si la tecla está en el mapeo
-            if key.char in key_map:
-                # Borrar la primera letra presionada (simular backspace)
-                controller.press(keyboard.Key.backspace)
-                controller.release(keyboard.Key.backspace)
-                controller.press(keyboard.Key.backspace)
-                controller.release(keyboard.Key.backspace)
+        if tecla == ultima_tecla and (tiempo_actual - ultimo_tiempo) <= intervalo_doble_pulsacion:
+            if tecla.char in mapa_teclas:
+                # Borrar la primera letra presionada (simular backspace x2)
+                controlador.press(keyboard.Key.backspace)
+                controlador.release(keyboard.Key.backspace)
+                controlador.press(keyboard.Key.backspace)
+                controlador.release(keyboard.Key.backspace)
 
                 # Simular la tecla reemplazada
-                replacement_key = key_map[key.char]
-                controller.press(replacement_key)
-                controller.release(replacement_key)
-                
-                # Resetear las variables para evitar duplicación
-                last_key = None
-                return  # No continuar procesando la segunda tecla
+                tecla_reemplazo = mapa_teclas[tecla.char]
+                controlador.press(tecla_reemplazo)
+                controlador.release(tecla_reemplazo)
 
+                print(f"Cambiando {tecla.char} por {tecla_reemplazo}")
+
+            elif tecla.char in mapa_palabras:
+                # Borrar la primera letra presionada (simular backspace x2)
+                controlador.press(keyboard.Key.backspace)
+                controlador.release(keyboard.Key.backspace)
+                controlador.press(keyboard.Key.backspace)
+                controlador.release(keyboard.Key.backspace)
+
+                # Escribir la palabra completa
+                palabra_reemplazo = mapa_palabras[tecla.char]
+                controlador.type(palabra_reemplazo)
+
+                print(f"Cambiando {tecla.char} por '{palabra_reemplazo}'")
+
+            elif tecla.char == 'c':
+                # Simular Ctrl + C (copiar)
+                with controlador.pressed(keyboard.Key.ctrl):
+                    controlador.press('c')
+                    controlador.release('c')
+                print("Ejecutando Ctrl+C")
+
+            elif tecla.char == 'v':
+                # Borrar la primera 'v' escrita antes de pegar
+                controlador.press(keyboard.Key.backspace)
+                controlador.release(keyboard.Key.backspace)
+                controlador.press(keyboard.Key.backspace)
+                controlador.release(keyboard.Key.backspace)
+                controlador.press(keyboard.Key.backspace)
+                controlador.release(keyboard.Key.backspace)
+
+                # Simular Ctrl + V (pegar)
+                with controlador.pressed(keyboard.Key.ctrl):
+                    controlador.press('v')
+                    controlador.release('v')
+                print("Ejecutando Ctrl+V")
+
+            elif tecla.char == 'm':
+                # Simular Ctrl + Alt + Flecha Derecha
+                with controlador.pressed(keyboard.Key.ctrl_l):
+                    with controlador.pressed(keyboard.Key.alt):
+                        controlador.press(keyboard.Key.right)
+                        controlador.release(keyboard.Key.right)
+                print("Ejecutando Ctrl+Alt+→")
+
+            # Resetear las variables para evitar duplicación
+            ultima_tecla = None
+            return  # No continuar procesando la segunda tecla
         else:
             # Actualizar la última tecla presionada y el tiempo
-            last_key = key
-            last_time = current_time
+            ultima_tecla = tecla
+            ultimo_tiempo = tiempo_actual
 
     except AttributeError:
-        # Para las teclas especiales (Ctrl, Shift, etc.)
+        # Para las teclas especiales (Ctrl, Shift, etc.), no hacer nada
         pass
 
-# Función que se ejecuta cuando se suelta una tecla (no se necesita implementar nada aquí)
-def on_release(key):
-    pass
+# Función que imprime "En ejecución" cada minuto
+conteo_ejecucion = 0
+
+def imprimir_estado():
+    """
+    Imprime un mensaje cada minuto indicando que el programa sigue en ejecución.
+    """
+    global conteo_ejecucion
+    while True:
+        conteo_ejecucion += 1
+        print("En ejecución...", conteo_ejecucion, "min")
+        time.sleep(60)
+
+# Crear un hilo para la función imprimir_estado, de modo que se ejecute en segundo plano
+hilo_estado = threading.Thread(target=imprimir_estado, daemon=True)
+hilo_estado.start()
 
 # Iniciar la escucha de teclas
-with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
-    listener.join()
+with keyboard.Listener(on_press=al_presionar) as oyente:
+    oyente.join()
